@@ -1,22 +1,35 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./navbar.css";
 import logo from "../assests/logo.png";
 import cart_icon from "../assests/cart_icon.png";
 import { Link } from "react-router-dom";
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
+import { ShopContext } from "../../context/ShopContext";
 
 const Navbar = () => {
+  const { all_products, cartItems } = useContext(ShopContext);
   const [menuActive, setMenuActive] = useState("shop");
   const location = useLocation();
- 
-  useEffect(()=> {
-    if(location.pathname==="/men" || location.pathname==="/women" || location.pathname==="/kids"){
-      setMenuActive(location?.pathname?.substring(1))
-    }else{
-      setMenuActive("shop")
+  const [cartQuantity, setCartQuantity] = useState(0);
+  useEffect(() => {
+    if (
+      location.pathname === "/men" ||
+      location.pathname === "/women" ||
+      location.pathname === "/kids"
+    ) {
+      setMenuActive(location?.pathname?.substring(1));
+    } else {
+      setMenuActive("shop");
     }
-  },[location.pathname])
-   
+    let total = 0;
+    all_products?.map((item, index) => {
+      if (cartItems[item.id] > 0) {
+        total = total + cartItems[item.id];
+      }
+    });
+    setCartQuantity(total);
+  }, [location.pathname,cartItems]);
+
   return (
     <div className="navbar">
       <div className="nav-logo">
@@ -51,12 +64,14 @@ const Navbar = () => {
       </ul>
       <div className="nav-login-cart">
         <button>
-          <Link style={{textDecoration:"none"}} to="/login">Login</Link>
+          <Link style={{ textDecoration: "none" }} to="/login">
+            Login
+          </Link>
         </button>
-        <Link style={{textDecoration:"none"}} to="/cart">
+        <Link style={{ textDecoration: "none" }} to="/cart">
           <img src={cart_icon} alt="" />
         </Link>
-        <div className="nav-cart-count">3</div>
+        <div className="nav-cart-count">{cartQuantity}</div>
       </div>
     </div>
   );
