@@ -1,11 +1,22 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import "./navbar.css";
 import logo from "../assests/logo.png";
 import cart_icon from "../assests/cart_icon.png";
 import { Link } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 
 const Navbar = () => {
   const [menuActive, setMenuActive] = useState("shop");
+  const location = useLocation();
+ 
+  useEffect(()=> {
+    if(location.pathname==="/men" || location.pathname==="/women" || location.pathname==="/kids"){
+      setMenuActive(location?.pathname?.substring(1))
+    }else{
+      setMenuActive("shop")
+    }
+  },[location.pathname])
+   
   return (
     <div className="navbar">
       <div className="nav-logo">
